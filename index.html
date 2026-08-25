@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"><title>SAKAYAN — Commuter App for Bunawan</title><meta name="description" content="SAKAYAN is a modern commuter application for Bunawan. Download the app and make your first ride with us.">
+    <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin> <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+ <style> :root { --primary-bg: #050505;
+            --text-main: #ffffff;  --text-muted: #a3a3a3; --accent: #00e5ff; /* Sharp electric cyan */ --glass-bg: rgba(10, 10, 10, 0.65); --glass-border: rgba(255, 255, 255, 0.1); }
+        * { margin: 0;
+            padding: 0;
+            box-sizing: border-box; font-family: 'Inter', sans-serif;
+        }
+        body {
+            background-color: var(--primary-bg); color: var(--text-main);  overflow-x: hidden; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;
+        }
+        .loader {
+            position: fixed;
+            inset: 0;background: var(--primary-bg);
+            display: flex; justify-content: center; align-items: center; z-index: 9999;
+            transition: opacity 0.8s cubic-bezier(0.8, 0, 0.2, 1), visibility 0.8s;
+        }.loader.hidden {opacity: 0;visibility: hidden;}.loader__inner { text-align: center; display: flex; flex-direction: column; align-items: center;
+            gap: 1.5rem;
+        }
+        .loader__logo {
+            width: 80px;
+            height: auto;
+            border-radius: 12px; /* 12px logo edges */
+            animation: pulse 2s infinite ease-in-out;
+        }
+        .loader__text {
+            font-size: 0.875rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(0.95); opacity: 0.7; }
+        }
+        .hero {position: relative; min-height: 100vh; display: flex;flex-direction: column; justify-content: center; align-items: center;
+            padding: 2rem;
+        }.hero__bg { position: absolute;inset: 0; z-index: -2; background-color: var(--primary-bg); } .hero__bg-img {position: absolute;
+            inset: 0;
+            background-size: cover; background-position: center;
+            opacity: 0;
+            transform: scale(1.05);
+            transition: opacity 2s ease-in-out, transform 8s linear;
+        }
+        .hero__bg-img.active {
+            opacity: 0.6;
+            transform: scale(1);
+        }
+        .hero__overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(180deg, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.8) 100%);
+            z-index: -1;
+        }
+        .hero__content {
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            padding: 4rem 3rem;
+            text-align: center;
+            max-width: 650px;
+            width: 100%;
+            border-radius: 9px; /* 9px edges applied here */
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            animation: fadeUp 1s ease-out 0.5s backwards;
+        }
+        .hero__intro {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            color: var(--accent);
+            margin-bottom: 1.5rem;
+            font-weight: 600;
+        }
+        .hero__title-row {
+            display: flex;
+            align-items: center;
+            justify-content: center; gap: 1.25rem;
+            margin-bottom: 1rem;}.hero__main-title {
+            font-size: clamp(3rem, 6vw, 4.5rem);
+            font-weight: 800;
+            letter-spacing: -2px;
+            line-height: 1;
+            margin: 0; }.hero__logo {
+            width: clamp(60px, 8vw, 90px);
+            height: auto;
+            object-fit: contain;
+            border-radius: 12px; /* 12px logo edges */  } .hero__subtitle-wrap {
+            height: 30px;
+            margin-bottom: 2.5rem; }.hero__subtitle {
+            font-size: 1.125rem;
+            color: var(--text-muted);
+            font-weight: 300;
+        }
+        .hero__cursor {
+            color: var(--accent);
+            animation: blink 1s step-end infinite;
+        }
+        .hero__location {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.875rem;
+            color: var(--text-muted);
+            margin-bottom: 2.5rem;
+            padding: 0.5rem 1rem;
+            border: 1px solid rgba(255,255,255,0.1);     border-radius: 9px; /* Added slight rounding to location pin box too */ } .hero__btn {
+            display: inline-block;
+            background: transparent;
+            color: var(--text-main);
+            text-decoration: none;
+            padding: 1rem 2.5rem;
+            font-size: 0.875rem;
+            font-weight: 600; letter-spacing: 2px;  text-transform: uppercase; border: 1px solid var(--accent);  border-radius: 9px; /* 9px edges applied here */
+            position: relative;  transition: all 0.3s ease;  cursor: pointer;  overflow: hidden;  z-index: 1;
+        }
+        .hero__btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: var(--accent);
+            transition: left 0.4s cubic-bezier(0.8, 0, 0.2, 1);
+            z-index: -1;
+        }
+        .hero__btn:hover::before {
+            left: 0;
+        }
+        .hero__btn:hover {
+            color: var(--primary-bg);
+            box-shadow: 0 0 20px rgba(0, 229, 255, 0.4);
+        }
+        .hero__footer {
+            margin-top: 3rem;
+            max-width: 800px;
+            text-align: center;
+            animation: fadeUp 1s ease-out 0.8s backwards;
+            background: rgba(255, 255, 255, 0.85); 
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            padding: 1.25rem 2rem;
+            border-radius: 9px; 
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+        .footer__text {
+            font-size: 0.75rem;
+            color: #000000; 
+            line-height: 1.6;
+            font-weight: 500;
+        }
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes blink {
+            50% { opacity: 0; }
+        }
+        @media (max-width: 600px) {
+            .hero__content { padding: 3rem 1.5rem; }
+            .hero__title-row { flex-direction: column-reverse; }
+        }
+    </style>
+</head>
+<body>
+    <div id="loader" class="loader" role="status" aria-label="Loading">
+        <div class="loader__inner">
+            <img src="photos/sakayanlogo.png" alt="SAKAYAN logo" class="loader__logo" onerror="this.src='https://via.placeholder.com/90/050505/00e5ff?text=S'">
+            <p class="loader__text">Initializing App...</p>
+        </div>
+    </div>
+    <main class="hero" id="hero">
+        <div class="hero__bg" aria-hidden="true">
+            <div class="hero__bg-img active" style="background-image: url('photos/background1.png');"></div>
+            <div class="hero__bg-img" style="background-image: url('photos/background2.png');"></div>
+            <div class="hero__bg-img" style="background-image: url('photos/background3.png');"></div>
+            <div class="hero__overlay"></div>
+        </div>
+        <section class="hero__content">
+            <p class="hero__intro">Begin Your Journey</p>
+
+            <div class="hero__title-row">
+                <h1 class="hero__main-title">SAKAYAN</h1>
+                <img src="photos/sakayanlogo.png" alt="SAKAYAN application logo" class="hero__logo" onerror="this.src='https://via.placeholder.com/90/050505/00e5ff?text=S'">
+            </div> <div class="hero__subtitle-wrap"><p class="hero__subtitle"> <span id="typing-text"></span><span class="hero__cursor" aria-hidden="true">|</span> </p> </div>
+
+            <div class="hero__location" aria-label="Location: Bunawan">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true"> <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/> </svg> <span>Bunawan, Caraga</span> </div>
+            <br> <a href="https://drive.google.com/uc?export=download&id=1m4UbuYpIugWVotE5sJeAlvoSVMRUg3pM"
+               class="hero__btn"
+               id="download-btn"
+               download
+               aria-label="Download SAKAYAN application">
+                Download App (Beta)
+            </a>
