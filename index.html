@@ -198,3 +198,72 @@
                aria-label="Download SAKAYAN application">
                 Download App (Beta)
             </a>
+        </section>
+        <footer class="hero__footer">
+            <p class="footer__text">
+                * This application is under beta testing and is developed for a student capstone project. Data, fare rates, and gasoline prices are subject to daily change and external factors not covered by this build. Designed to assist commuters and drivers.
+            </p>
+        </footer>
+    </main>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const loader = document.getElementById('loader');
+
+            window.addEventListener('load', () => {
+                setTimeout(() => {
+                    loader.classList.add('hidden');
+                }, 800);
+            });
+
+            const bgImages = document.querySelectorAll('.hero__bg-img');
+            let currentBgIndex = 0;
+            setInterval(() => {
+                bgImages[currentBgIndex].classList.remove('active');
+                currentBgIndex = (currentBgIndex + 1) % bgImages.length;
+                bgImages[currentBgIndex].classList.add('active');
+            }, 6000);
+
+            const typingSpan = document.getElementById('typing-text');
+            const phrases = [
+                "Your daily commute, simplified.",
+                "Safe, fast, and reliable.",
+                "Navigate Bunawan with ease."
+            ];
+            let phraseIndex = 0;
+            let letterIndex = 0;
+            let currentText = '';
+            let isDeleting = false;
+            let typeSpeed = 100;
+
+            function type() {
+                const fullPhrase = phrases[phraseIndex];
+
+                if (isDeleting) {
+                    currentText = fullPhrase.substring(0, letterIndex - 1);
+                    letterIndex--;
+                    typeSpeed = 50;
+                } else {
+                    currentText = fullPhrase.substring(0, letterIndex + 1);
+                    letterIndex++;
+                    typeSpeed = 100;
+                }
+
+                typingSpan.textContent = currentText;
+
+                if (!isDeleting && currentText === fullPhrase) {
+                    typeSpeed = 2000;
+                    isDeleting = true;
+                } else if (isDeleting && currentText === '') {
+                    isDeleting = false;
+                    phraseIndex = (phraseIndex + 1) % phrases.length;
+                    typeSpeed = 500;
+                }
+
+                setTimeout(type, typeSpeed);
+            }
+
+            setTimeout(type, 1500);
+        });
+    </script>
+</body>
+</html>
